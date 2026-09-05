@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Technician - RetinaGuard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+
+        body { 
+            background-color: #020813; 
+            color: #ffffff; 
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Top Navbar */
+        .top-navbar {
+            background-color: #040d1a;
+            border-bottom: 1px solid rgba(0, 230, 118, 0.1);
+            padding: 15px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .top-navbar .logo { display: flex; align-items: center; gap: 10px; font-size: 18px; font-weight: 700; color: #fff;}
+        .top-navbar .logo i { color: #00e676; font-size: 22px; }
+        .top-navbar .divider { width: 2px; height: 20px; background-color: #00e676; }
+        .top-navbar .page-title { font-size: 16px; font-weight: 500; }
+
+        /* Main Container */
+        .main-container {
+            padding: 30px 50px;
+            flex: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* Page Header */
+        .page-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        .page-header .icon-box {
+            width: 45px; height: 45px;
+            background: rgba(0, 230, 118, 0.1);
+            border: 1px solid #00e676;
+            border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            color: #00e676; font-size: 20px;
+        }
+        .page-header h2 { font-size: 22px; font-weight: 700; margin-bottom: 5px; color: #fff; }
+        .page-header p { font-size: 13px; color: #00e676; }
+
+        /* Grid Layout */
+        .form-grid-top {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+
+        /* Section Cards */
+        .section-card {
+            background-color: #06111a;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 25px 30px;
+        }
+        .section-title {
+            display: flex; align-items: center; gap: 10px;
+            font-size: 15px; font-weight: 600;
+            margin-bottom: 25px;
+            color: #fff;
+        }
+        .section-title i { color: #00e676; }
+
+        /* Form Fields */
+        .form-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+        .form-group label {
+            width: 160px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            color: #fff;
+        }
+        .form-group label i { color: #00e676; width: 16px; text-align: center; }
+        .form-group input, .form-group select {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            padding: 10px 15px;
+            color: #fff;
+            font-size: 13px;
+            outline: none;
+            transition: 0.3s;
+        }
+        .form-group input:focus, .form-group select:focus {
+            border-color: #00e676;
+        }
+        
+        /* Select Dropdown arrow styling */
+        select {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2300e676' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: 14px;
+        }
+
+        /* Professional Information Grid */
+        .prof-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            column-gap: 40px;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 30px;
+            margin-bottom: 40px;
+        }
+        .btn {
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.3s;
+        }
+        .btn-cancel { background: transparent; border: 1px solid #ff4a4a; color: #ff4a4a; }
+        .btn-create { background: #00e676; border: 1px solid #00e676; color: #000; }
+        
+        .btn-cancel:hover { background: rgba(255, 74, 74, 0.1); }
+        .btn-create:hover { background: #00c652; }
+
+        /* Message */
+        #statusMessage {
+            text-align: center; margin-top: 20px; font-size: 14px; display: none;
+        }
+        .success { color: #00e676; }
+        .error { color: #ff4a4a; }
+
+    </style>
+</head>
+<body>
+
+    <div class="top-navbar">
+        <div class="logo"><i class="fa-solid fa-eye"></i> RetinaGuard</div>
+        <div class="divider"></div>
+        <div class="page-title">Add Technician</div>
+    </div>
+
+    <div class="main-container">
+        
+        <div class="page-header">
+            <div class="icon-box"><i class="fa-solid fa-user-plus"></i></div>
+            <div>
+                <h2>Add Technician</h2>
+                <p>Register a new technician in RetinaGuard</p>
+            </div>
+        </div>
+
+        <form id="addTechnicianForm">
+            
+            <div class="form-grid-top">
+                <!-- Personal Information -->
+                <div class="section-card">
+                    <div class="section-title"><i class="fa-solid fa-address-card"></i> Personal Information</div>
+                    
+                    <div class="form-group">
+                        <label><i class="fa-regular fa-user"></i> Full Name:</label>
+                        <input type="text" id="full_name" placeholder="Enter full name" required>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fa-regular fa-id-badge"></i> Employee ID:</label>
+                        <input type="text" id="employee_id" placeholder="Enter employee ID" required>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fa-solid fa-phone"></i> Phone Number:</label>
+                        <input type="text" id="phone" placeholder="Enter phone number">
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fa-solid fa-venus-mars"></i> Gender:</label>
+                        <select id="gender">
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Account Information -->
+                <div class="section-card">
+                    <div class="section-title"><i class="fa-solid fa-user-shield"></i> Account Information</div>
+                    
+                    <div class="form-group">
+                        <label><i class="fa-regular fa-envelope"></i> Email :</label>
+                        <input type="email" id="email" placeholder="Enter email address" required>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fa-solid fa-at"></i> Username :</label>
+                        <input type="text" id="username" placeholder="Enter username" required>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fa-solid fa-lock"></i> Password :</label>
+                        <input type="password" id="password" placeholder="Enter password" required>
+                    </div>
+                    <div class="form-group">
+                        <label style="padding-left: 26px;">Confirm Password :</label>
+                        <input type="password" id="confirm_password" placeholder="Confirm password" required>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Professional Information -->
+            <div class="section-card">
+                <div class="section-title"><i class="fa-solid fa-user-tie"></i> Professional Information</div>
+                
+                <div class="prof-grid">
+                    <div>
+                        <div class="form-group">
+                            <label><i class="fa-regular fa-building"></i> Department:</label>
+                            <select id="department">
+                                <option value="Ophthalmology">Ophthalmology</option>
+                                <option value="Optometry">Optometry</option>
+                                <option value="General">General</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fa-solid fa-user-gear"></i> Assigned Role:</label>
+                            <select id="role" disabled style="color: #8b9bb4;">
+                                <option value="Technician" selected>Technician</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="form-group">
+                            <label><i class="fa-regular fa-calendar-days"></i> Joining Date:</label>
+                            <input type="date" id="joining_date">
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fa-regular fa-circle-check"></i> Status:</label>
+                            <select id="status" style="color: #00e676;">
+                                <option value="Active">Active</option>
+                                <option value="Inactive">Inactive</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="statusMessage"></div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button type="button" class="btn btn-cancel" onclick="window.history.back()"><i class="fa-solid fa-xmark"></i> Cancel</button>
+                <button type="submit" class="btn btn-create"><i class="fa-solid fa-plus"></i> Add Technician</button>
+            </div>
+        </form>
+
+    </div>
+
+    <script>
+        document.getElementById('addTechnicianForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const token = localStorage.getItem('access_token');
+            if (!token) {
+                alert("Authentication missing. Please log in again.");
+                window.location.href = '../shared/login.html';
+                return;
+            }
+
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm_password').value;
+            const statusMsg = document.getElementById('statusMessage');
+
+            // Password validation
+            if (password !== confirmPassword) {
+                statusMsg.textContent = "Passwords do not match!";
+                statusMsg.className = "error";
+                statusMsg.style.display = "block";
+                return;
+            }
+
+            // Preparing data to send to backend
+            const data = {
+                full_name: document.getElementById('full_name').value,
+                employee_id: document.getElementById('employee_id').value,
+                phone: document.getElementById('phone').value,
+                gender: document.getElementById('gender').value,
+                email: document.getElementById('email').value,
+                username: document.getElementById('username').value,
+                password: password,
+                department: document.getElementById('department').value,
+                joining_date: document.getElementById('joining_date').value,
+                status: document.getElementById('status').value
+            };
+
+            const submitBtn = document.querySelector('.btn-create');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Adding...';
+            submitBtn.disabled = true;
+
+            try {
+                // Actual Backend API call
+                const response = await fetch('http://127.0.0.1:8000/api/hospital-admin/technicians', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        full_name: data.full_name,
+                        email: data.email,
+                        password: data.password
+                    })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    statusMsg.textContent = "Technician successfully added!";
+                    statusMsg.className = "success";
+                    statusMsg.style.display = "block";
+                    document.getElementById('addTechnicianForm').reset();
+                    
+                    setTimeout(() => {
+                        window.location.href = 'technicians.html';
+                    }, 1500);
+                } else {
+                    statusMsg.textContent = result.detail || "Something went wrong!";
+                    statusMsg.className = "error";
+                    statusMsg.style.display = "block";
+                }
+            } catch (error) {
+                statusMsg.textContent = "Failed to connect to the server.";
+                statusMsg.className = "error";
+                statusMsg.style.display = "block";
+            } finally {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>

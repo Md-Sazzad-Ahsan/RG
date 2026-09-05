@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Technician Dashboard - RetinaGuard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+
+        body { 
+            display: flex; flex-direction: column; height: 100vh; 
+            background-color: #020813; 
+            color: #ffffff; overflow: hidden;
+        }
+
+        .layout-container { display: flex; flex: 1; overflow: hidden; }
+
+        /* --- Sidebar --- */
+        .sidebar {
+            width: 250px; background-color: #040d1a; border-right: 1px solid rgba(0, 230, 118, 0.1);
+            display: flex; flex-direction: column; padding: 20px 0; z-index: 10;
+        }
+        .sidebar-logo {
+            display: flex; align-items: center; gap: 10px; font-size: 20px; font-weight: 700; 
+            padding: 0 20px; margin-bottom: 40px; color: #fff;
+        }
+        .sidebar-logo i { color: #00e676; font-size: 24px; }
+
+        .nav-menu { list-style: none; flex: 1; display: flex; flex-direction: column; gap: 5px; }
+        .nav-item {
+            padding: 12px 25px; display: flex; align-items: center; gap: 15px;
+            color: #8b9bb4; text-decoration: none; font-size: 13px; font-weight: 500;
+            transition: all 0.3s; border-left: 3px solid transparent;
+        }
+        .nav-item:hover, .nav-item.active {
+            color: #00e676; border-left: 3px solid #00e676;
+            background: linear-gradient(90deg, rgba(0,230,118,0.05) 0%, rgba(0,230,118,0) 100%);
+        }
+        .nav-item i { width: 20px; text-align: center; }
+
+        .support-box {
+            margin: 20px; padding: 15px; background-color: #061526;
+            border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);
+        }
+        .support-box h4 { font-size: 13px; margin-bottom: 5px; color: #fff; }
+        .support-box p { font-size: 10px; color: #00e676; margin-bottom: 12px; line-height: 1.4; }
+        .btn-support {
+            width: 100%; padding: 8px; background: transparent; border: 1px solid #00e676;
+            color: #00e676; border-radius: 4px; font-size: 12px; cursor: pointer; transition: 0.3s;
+        }
+        .btn-support:hover { background: #00e676; color: #000; }
+
+        /* --- Main Content --- */
+        .main-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+        /* Top Header */
+        .top-header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 15px 30px; background-color: #040d1a; border-bottom: 1px solid rgba(0, 230, 118, 0.1);
+        }
+        .header-left { display: flex; align-items: center; gap: 15px; }
+        .header-divider { width: 3px; height: 20px; background-color: #00e676; border-radius: 2px; }
+        .hospital-name { font-size: 16px; font-weight: 600; color: #fff; }
+        
+        .header-right { display: flex; align-items: center; gap: 20px; }
+        .notification-icon {
+            position: relative; width: 35px; height: 35px; border-radius: 50%;
+            border: 1px solid rgba(255,255,255,0.2); display: flex; justify-content: center; align-items: center; cursor: pointer;
+        }
+        .notification-badge {
+            position: absolute; top: -3px; right: -3px; background: #ff4a4a; color: #fff;
+            font-size: 9px; width: 14px; height: 14px; border-radius: 50%; display: flex; justify-content: center; align-items: center;
+        }
+        .user-profile { display: flex; align-items: center; gap: 12px; cursor: pointer; }
+        .user-profile img { width: 35px; height: 35px; border-radius: 50%; border: 1px solid #00e676; }
+        .user-info { text-align: right; }
+        .user-info h4 { font-size: 13px; font-weight: 600; color: #fff; margin-bottom: 2px; }
+        .user-info p { font-size: 10px; color: #00e676; }
+
+        /* Scrollable Body */
+        .content-body { padding: 25px 30px; flex: 1; overflow-y: auto; }
+        .content-body::-webkit-scrollbar { width: 6px; }
+        .content-body::-webkit-scrollbar-thumb { background: #00e676; border-radius: 10px; }
+
+        /* Welcome Section */
+        .welcome-sec { margin-bottom: 25px; }
+        .welcome-sec h1 { font-size: 22px; font-weight: 700; margin-bottom: 5px; color: #fff; }
+        .welcome-sec p { font-size: 12px; color: #00e676; }
+
+        /* Stats Row (4 Cards) */
+        .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 25px; }
+        .stat-card {
+            background: #06111a; border: 1px solid rgba(255,255,255,0.05); border-radius: 8px;
+            padding: 20px; display: flex; align-items: center; gap: 15px;
+        }
+        .stat-icon-box {
+            width: 45px; height: 45px; border-radius: 8px; background: rgba(0,230,118,0.1);
+            color: #00e676; display: flex; justify-content: center; align-items: center; font-size: 18px;
+        }
+        .stat-icon-box.pending { background: rgba(59, 130, 246, 0.1); color: #3b82f6; }
+        .stat-icon-box.rejected { background: rgba(255, 74, 74, 0.1); color: #ff4a4a; }
+        .stat-details h3 { font-size: 22px; font-weight: 700; color: #fff; margin-bottom: 2px; }
+        .stat-details p { font-size: 12px; color: #8b9bb4; }
+
+        /* Middle Section (Queue & Recent Activities) */
+        .middle-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 25px; }
+        .grid-card {
+            background: #06111a; border: 1px solid rgba(255,255,255,0.05); border-radius: 8px; padding: 20px;
+        }
+        .grid-card h3 { font-size: 14px; font-weight: 600; color: #fff; margin-bottom: 15px; }
+        
+        .queue-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 13px;
+        }
+        .queue-item:last-child { border-bottom: none; }
+        .queue-label { display: flex; align-items: center; gap: 10px; color: #fff; }
+        .dot { width: 8px; height: 8px; border-radius: 50%; }
+        .dot-waiting { background: #f59e0b; }
+        .dot-processing { background: #3b82f6; }
+        .dot-completed { background: #00e676; }
+        .dot-rejected { background: #ff4a4a; }
+        .queue-count { font-weight: 600; color: #fff; }
+
+        .activity-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 12px;
+        }
+        .activity-item:last-child { border-bottom: none; }
+        .activity-code { color: #8b9bb4; display: flex; align-items: center; gap: 8px; }
+        .badge {
+            padding: 4px 10px; border-radius: 4px; font-size: 10px; font-weight: 600;
+        }
+        .badge-completed { background: rgba(0,230,118,0.1); color: #00e676; border: 1px solid rgba(0,230,118,0.2); }
+        .badge-processing { background: rgba(59,130,246,0.1); color: #3b82f6; border: 1px solid rgba(59,130,246,0.2); }
+        .badge-waiting { background: rgba(245,158,11,0.1); color: #f59e0b; border: 1px solid rgba(245,158,11,0.2); }
+
+        /* Bottom Start Screening Card */
+        .start-screening-card {
+            background: #06111a; border: 1px solid rgba(255,255,255,0.05); border-radius: 8px; padding: 25px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .screening-left { display: flex; align-items: center; gap: 20px; }
+        .screening-icon {
+            width: 60px; height: 60px; border-radius: 50%; border: 2px dashed #00e676;
+            display: flex; justify-content: center; align-items: center; color: #00e676; font-size: 20px;
+        }
+        .screening-info h3 { font-size: 16px; font-weight: 600; color: #fff; margin-bottom: 4px; }
+        .screening-info p { font-size: 12px; color: #8b9bb4; }
+        .btn-start {
+            background: #00e676; color: #000; border: none; padding: 10px 20px;
+            border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; text-decoration: none; transition: 0.3s;
+        }
+        .btn-start:hover { background: #00c652; }
+    </style>
+</head>
+<body>
+
+    <div class="layout-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-logo">
+                <i class="fa-solid fa-eye"></i>
+                <span>RetinaGuard</span>
+            </div>
+            
+            <ul class="nav-menu">
+                <a href="./dashboard.html" class="nav-item active"><i class="fa-solid fa-gauge-high"></i> Dashboard</a>
+                <a href="./new_screening.html" class="nav-item"><i class="fa-solid fa-microscope"></i> New Screenings</a>
+                <a href="./patients.html" class="nav-item"><i class="fa-solid fa-users"></i> Patients</a>
+                <a href="./ai_reports.html" class="nav-item"><i class="fa-solid fa-file-lines"></i> AI Reports</a>
+            </ul>
+
+            <div class="support-box">
+                <h4>Need Help?</h4>
+                <p>Contact our support team anytime</p>
+                <button class="btn-support"><i class="fa-solid fa-headset"></i> Contact Support</button>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Top Header -->
+            <div class="top-header">
+                <div class="header-left">
+                    <div class="header-divider"></div>
+                    <div class="hospital-name" id="displayHospitalName">Dhaka Medical College Hospital</div>
+                </div>
+                <div class="header-right">
+                    <div class="notification-icon">
+                        <i class="fa-regular fa-bell"></i>
+                        <div class="notification-badge">1</div>
+                    </div>
+                    <div class="user-profile" onclick="logout()">
+                        <div class="user-info">
+                            <h4 id="techName">Technician</h4>
+                            <p>Technician</p>
+                        </div>
+                        <img src="https://ui-avatars.com/api/?name=T&background=00e676&color=000" alt="Avatar" id="techAvatar">
+                        <i class="fa-solid fa-chevron-down" style="font-size: 10px; color: #8b9bb4;"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scrollable Content -->
+            <div class="content-body">
+                
+                <div class="welcome-sec">
+                    <h1 id="welcomeGreeting">Welcome, Technician 👋</h1>
+                    <p>Welcome back. Here's today's screening activity.</p>
+                </div>
+
+                <!-- 4 Stats Cards -->
+                <div class="stats-row">
+                    <div class="stat-card">
+                        <div class="stat-icon-box"><i class="fa-solid fa-user-plus"></i></div>
+                        <div class="stat-details"><h3>42</h3><p>Patients</p></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon-box"><i class="fa-solid fa-circle-check"></i></div>
+                        <div class="stat-details"><h3>32</h3><p>Completed</p></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon-box pending"><i class="fa-regular fa-clock"></i></div>
+                        <div class="stat-details"><h3>4</h3><p>Pending</p></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon-box rejected"><i class="fa-solid fa-circle-xmark"></i></div>
+                        <div class="stat-details"><h3>2</h3><p>Rejected</p></div>
+                    </div>
+                </div>
+
+                <!-- Middle Section: Today's Queue & Recent Activities -->
+                <div class="middle-grid">
+                    <div class="grid-card">
+                        <h3>Today's Queue</h3>
+                        <div class="queue-item">
+                            <div class="queue-label"><div class="dot dot-waiting"></div> Waiting</div>
+                            <div class="queue-count">04</div>
+                        </div>
+                        <div class="queue-item">
+                            <div class="queue-label"><div class="dot dot-processing"></div> Processing</div>
+                            <div class="queue-count">02</div>
+                        </div>
+                        <div class="queue-item">
+                            <div class="queue-label"><div class="dot dot-completed"></div> Completed</div>
+                            <div class="queue-count">38</div>
+                        </div>
+                        <div class="queue-item">
+                            <div class="queue-label"><div class="dot dot-rejected"></div> Rejected</div>
+                            <div class="queue-count">02</div>
+                        </div>
+                    </div>
+
+                    <div class="grid-card">
+                        <h3>Recent Activities</h3>
+                        <div class="activity-item">
+                            <div class="activity-code"><i class="fa-regular fa-eye" style="color:#00e676;"></i> RG-DMCH-26-000001:</div>
+                            <span class="badge badge-completed">Completed</span>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-code"><i class="fa-regular fa-eye" style="color:#00e676;"></i> RG-DMCH-26-000002:</div>
+                            <span class="badge badge-processing">Processing</span>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-code"><i class="fa-regular fa-eye" style="color:#00e676;"></i> RG-DMCH-26-000003:</div>
+                            <span class="badge badge-waiting">Waiting</span>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-code"><i class="fa-regular fa-eye" style="color:#00e676;"></i> RG-DMCH-26-000004:</div>
+                            <span class="badge badge-completed">Completed</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bottom Start Screening Card -->
+                <div class="start-screening-card">
+                    <div class="screening-left">
+                        <div class="screening-icon"><i class="fa-solid fa-plus"></i></div>
+                        <div class="screening-info">
+                            <h3>Start New Screening</h3>
+                            <p>Register patient, upload fundus images and submit for AI analysis.</p>
+                        </div>
+                    </div>
+                    <a href="#" class="btn-start">Start Screening</a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const token = localStorage.getItem('access_token');
+            const role = localStorage.getItem('user_role');
+            let fullName = localStorage.getItem('user_name') || "Technician";
+
+            if (!token || role !== 'technician') {
+                alert('অননুমোদিত এক্সেস! টেকনিশিয়ান হিসেবে লগইন করুন।');
+                window.location.href = '../shared/login.html';
+                return;
+            }
+
+            // Update UI with Technician Name
+            document.getElementById('techName').textContent = fullName;
+            document.getElementById('welcomeGreeting').textContent = `Welcome, ${fullName} 👋`;
+            
+            const initial = fullName.charAt(0).toUpperCase();
+            document.getElementById('techAvatar').src = `https://ui-avatars.com/api/?name=${initial}&background=00e676&color=000&bold=true`;
+        });
+
+        function logout() {
+            localStorage.clear();
+            window.location.href = '../shared/login.html';
+        }
+    </script>
+</body>
+</html>
