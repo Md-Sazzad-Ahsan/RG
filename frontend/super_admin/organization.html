@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Organization - RetinaGuard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+
+        body { 
+            display: flex; 
+            flex-direction: column;
+            height: 100vh; 
+            background-color: #030a10; /* Dark teal-black background */
+            color: #ffffff; 
+            overflow: hidden;
+        }
+
+        .layout-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* --- Sidebar Styles --- */
+        .sidebar {
+            width: 250px;
+            background-color: #06111a;
+            border-right: 1px solid rgba(0, 230, 118, 0.1);
+            display: flex;
+            flex-direction: column;
+            padding: 20px 0;
+            z-index: 10;
+        }
+
+        .sidebar-logo {
+            display: flex; align-items: center; gap: 10px;
+            font-size: 20px; font-weight: 700; padding: 0 20px; margin-bottom: 40px;
+        }
+        .sidebar-logo i { color: #00e676; font-size: 24px; }
+
+        .nav-menu { list-style: none; flex: 1; }
+        .nav-item {
+            padding: 12px 25px; display: flex; align-items: center; gap: 15px;
+            color: #8b9bb4; text-decoration: none; font-size: 14px; font-weight: 500;
+            transition: all 0.3s; border-left: 3px solid transparent;
+        }
+        .nav-item:hover, .nav-item.active {
+            color: #fff;
+            background: linear-gradient(90deg, rgba(0,230,118,0.1) 0%, rgba(0,230,118,0) 100%);
+            border-left: 3px solid #00e676;
+        }
+        .nav-item i { width: 20px; text-align: center; color: #00e676; }
+
+        .support-box {
+            margin: 20px; padding: 20px; background-color: #091a26;
+            border-radius: 10px; border: 1px solid rgba(255,255,255,0.05);
+        }
+        .support-box h4 { font-size: 13px; margin-bottom: 5px; }
+        .support-box p { font-size: 11px; color: #00e676; margin-bottom: 15px; line-height: 1.4; }
+        .btn-support {
+            width: 100%; padding: 8px; background: transparent; border: 1px solid #00e676;
+            color: #00e676; border-radius: 6px; font-size: 12px; cursor: pointer; transition: 0.3s;
+        }
+        .btn-support:hover { background: #00e676; color: #000; }
+
+        /* --- Main Content Area --- */
+        .main-content {
+            flex: 1; display: flex; flex-direction: column; overflow: hidden;
+        }
+
+        /* Top Header */
+        .top-header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 15px 30px; background-color: #06111a; border-bottom: 1px solid rgba(0, 230, 118, 0.1);
+        }
+        .header-title { display: flex; align-items: center; gap: 15px; font-size: 18px; font-weight: 600; }
+        .header-title .divider { width: 2px; height: 20px; background-color: #00e676; }
+        
+        .header-actions { display: flex; align-items: center; gap: 15px; }
+        .btn-add {
+            background: transparent; color: #00e676; border: 1px solid #00e676; padding: 8px 16px;
+            border-radius: 4px; font-size: 13px; font-weight: 600; cursor: pointer;
+            display: flex; align-items: center; gap: 8px; text-decoration: none; transition: 0.3s;
+        }
+        .btn-add:hover { background: #00e676; color: #000; }
+        .notification-icon {
+            position: relative; width: 35px; height: 35px; border-radius: 50%;
+            border: 1px solid rgba(255,255,255,0.2); display: flex; justify-content: center; align-items: center; cursor: pointer;
+        }
+        .notification-badge {
+            position: absolute; top: -2px; right: -2px; background: #ff4a4a; color: #fff;
+            font-size: 10px; width: 14px; height: 14px; border-radius: 50%; display: flex; justify-content: center; align-items: center;
+        }
+
+        /* Content Padding */
+        .content-body { padding: 20px 30px; display: flex; flex-direction: column; flex: 1; overflow: hidden; }
+
+        /* Top Stats Row */
+        .stats-row {
+            display: flex; gap: 15px; margin-bottom: 20px;
+        }
+        .stat-card {
+            flex: 1; background: #132431; border: 1px solid #1a3243;
+            border-radius: 8px; padding: 15px; display: flex; align-items: center; gap: 15px;
+        }
+        .stat-card h3 { font-size: 24px; font-weight: 700; margin-bottom: 2px; }
+        .stat-card p { font-size: 12px; color: #00e676; }
+        .stat-icon { color: #8b9bb4; font-size: 20px; }
+        .stat-dot { width: 8px; height: 8px; border-radius: 50%; background: #00e676; display: inline-block; }
+        .stat-dot.inactive { background: #ff4a4a; }
+
+        /* Toolbar */
+        .toolbar {
+            display: flex; justify-content: space-between; margin-bottom: 20px; gap: 15px;
+        }
+        .search-box {
+            display: flex; align-items: center; background: #132431;
+            border: 1px solid #1a3243; border-radius: 6px; padding: 8px 15px; flex: 1; max-width: 400px;
+        }
+        .search-box i { color: #00e676; margin-right: 10px; font-size: 14px; }
+        .search-box input {
+            border: none; background: transparent; color: #fff; outline: none; width: 100%; font-size: 13px;
+        }
+        .filters { display: flex; gap: 10px; }
+        .filter-select {
+            background: #2a4356; color: #00e676; border: none; padding: 8px 15px;
+            border-radius: 6px; font-size: 12px; outline: none; cursor: pointer;
+        }
+        .btn-export {
+            background: #2a4356; color: #00e676; border: none; padding: 8px 15px;
+            border-radius: 6px; font-size: 12px; cursor: pointer; display: flex; align-items: center; gap: 5px;
+        }
+
+        /* Split Layout */
+        .split-layout {
+            display: grid; grid-template-columns: 1fr 1.5fr; gap: 20px; flex: 1; overflow: hidden;
+        }
+
+        /* Left Pane - List */
+        .list-pane {
+            display: flex; flex-direction: column; overflow: hidden;
+        }
+        .list-header { font-size: 14px; font-weight: 600; margin-bottom: 15px; color: #fff; }
+        .list-content {
+            flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding-right: 5px;
+        }
+        .org-list-item {
+            background: #132431; border: 1px solid #1a3243; border-radius: 6px; padding: 15px;
+            cursor: pointer; transition: 0.2s;
+        }
+        .org-list-item:hover, .org-list-item.active { border-color: #00e676; background: rgba(0, 230, 118, 0.05); }
+        .org-list-item h4 { font-size: 14px; margin-bottom: 5px; }
+        .org-list-item p { font-size: 12px; color: #8b9bb4; }
+        .not-found { color: #ff4a4a; font-size: 14px; margin-top: 10px; }
+
+        .pagination {
+            display: flex; justify-content: center; gap: 5px; margin-top: 15px;
+        }
+        .page-btn {
+            background: #132431; border: 1px solid #1a3243; color: #fff; width: 30px; height: 30px;
+            border-radius: 4px; display: flex; justify-content: center; align-items: center; font-size: 12px; cursor: pointer;
+        }
+        .page-btn.active { background: #00e676; color: #000; border-color: #00e676; }
+
+        /* Right Pane - Details */
+        .details-pane {
+            background: #192e3f; border: 1px solid #234056; border-radius: 12px;
+            padding: 25px; display: flex; flex-direction: column; overflow-y: auto;
+        }
+        .details-header { display: flex; justify-content: space-between; margin-bottom: 20px; }
+        .details-header h3 { font-size: 14px; color: #fff; font-weight: 600; }
+        .details-header i { color: #00e676; cursor: pointer; }
+
+        .org-title-sec { margin-bottom: 25px; }
+        .org-title-sec h2 { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+        .status-badge {
+            display: inline-flex; align-items: center; gap: 5px; font-size: 12px; color: #00e676;
+        }
+
+        .info-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 30px;
+        }
+        .info-item { display: flex; font-size: 13px; }
+        .info-item strong { width: 80px; color: #fff; font-weight: 500; }
+        .info-item span { color: #8b9bb4; flex: 1; }
+        .info-item span.highlight { color: #00e676; }
+
+        /* Statistics Inside Details */
+        .stats-section h4 { font-size: 13px; margin-bottom: 15px; color: #fff; }
+        .stats-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 30px;
+        }
+        .small-stat-card {
+            background: #132431; border: 1px solid #1a3243; border-radius: 8px; padding: 15px;
+            display: flex; justify-content: space-between; align-items: flex-start;
+        }
+        .small-stat-card h3 { font-size: 20px; font-weight: 700; margin-bottom: 5px; }
+        .small-stat-card p { font-size: 11px; color: #00e676; }
+        .small-stat-card i { color: #00e676; font-size: 16px; }
+
+        /* Action Buttons */
+        .details-actions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: auto; }
+        .action-btn {
+            padding: 10px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer;
+            display: flex; justify-content: center; align-items: center; gap: 8px; background: transparent; transition: 0.3s;
+        }
+        .btn-edit { border: 1px solid #00e676; color: #00e676; }
+        .btn-edit:hover { background: rgba(0,230,118,0.1); }
+        .btn-disable { border: 1px solid #ff4a4a; color: #ff4a4a; }
+        .btn-disable:hover { background: rgba(255,74,74,0.1); }
+        .btn-delete { border: 1px solid #ff4a4a; color: #ff4a4a; }
+        .btn-delete:hover { background: rgba(255,74,74,0.1); }
+
+        /* --- System Health Footer --- */
+        .system-health {
+            background: #06111a; border-top: 1px solid #00e676; padding: 10px 30px;
+            display: flex; align-items: center; justify-content: space-between; font-size: 11px; color: #fff;
+        }
+        .health-logo { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; }
+        .health-logo i { color: #00e676; }
+        .status-items { display: flex; gap: 40px; }
+        .status-item { display: flex; align-items: center; gap: 6px; }
+        .status-text span { display: block; color: #00e676; font-size: 9px; }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background: #00e676; border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+    <div class="layout-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-logo">
+                <i class="fa-solid fa-eye"></i>
+                <span>RetinaGuard</span>
+            </div>
+            
+            <ul class="nav-menu">
+                <a href="dashboard.html" class="nav-item"><i class="fa-solid fa-gauge-high"></i> Dashboard</a>
+                <a href="organization.html" class="nav-item active"><i class="fa-solid fa-building"></i> Organization</a>
+                <a href="#" class="nav-item"><i class="fa-solid fa-users"></i> Users Management</a>
+                <a href="#" class="nav-item"><i class="fa-solid fa-microchip"></i> AI Models</a>
+                <a href="#" class="nav-item"><i class="fa-solid fa-chart-simple"></i> Analytics</a>
+                <a href="#" class="nav-item"><i class="fa-solid fa-file-lines"></i> Reports</a>
+            </ul>
+
+            <div class="support-box">
+                <h4>Need Help?</h4>
+                <p>Contact our support team anytime</p>
+                <button class="btn-support"><i class="fa-solid fa-headset"></i> Contact Support</button>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Top Header -->
+            <div class="top-header">
+                <div class="header-title">
+                    <span style="color: #8b9bb4;"><i class="fa-solid fa-eye"></i> RetinaGuard</span>
+                    <div class="divider"></div>
+                    <span>Organization</span>
+                </div>
+                <div class="header-actions">
+                    <a href="./add_organization.html" class="btn-add">
+                        <i class="fa-solid fa-plus"></i> Add Organization
+                    </a>
+                    <div class="notification-icon">
+                        <i class="fa-regular fa-bell"></i>
+                        <div class="notification-badge">1</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-body">
+                <!-- Stats Row -->
+                <div class="stats-row">
+                    <div class="stat-card">
+                        <i class="fa-solid fa-building stat-icon"></i>
+                        <div><h3 id="statOrgCount">0</h3><p>Organizations</p></div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fa-solid fa-user-doctor stat-icon"></i>
+                        <div><h3>0</h3><p>Doctors</p></div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fa-solid fa-users-gear stat-icon"></i>
+                        <div><h3>0</h3><p>Technicians</p></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-dot"></div>
+                        <div><h3 id="statActiveCount">0</h3><p>Active</p></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-dot inactive"></div>
+                        <div><h3>0</h3><p>Inactive</p></div>
+                    </div>
+                </div>
+
+                <!-- Toolbar -->
+                <div class="toolbar">
+                    <div class="search-box">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" placeholder="Search organizations...">
+                    </div>
+                    <div class="filters">
+                        <select class="filter-select"><option>Status</option></select>
+                        <select class="filter-select"><option>Division</option></select>
+                        <select class="filter-select"><option>District</option></select>
+                        <select class="filter-select"><option>Type</option></select>
+                        <button class="btn-export"><i class="fa-solid fa-download"></i> Export <i class="fa-solid fa-chevron-down" style="font-size:10px;"></i></button>
+                    </div>
+                </div>
+
+                <!-- Split Layout -->
+                <div class="split-layout">
+                    <!-- Left: List -->
+                    <div class="list-pane">
+                        <div class="list-header">Organization List</div>
+                        <div class="list-content" id="hospitalList">
+                            <p class="not-found" id="notFoundMsg">Loading organizations...</p>
+                            <!-- List items will be injected here via JS -->
+                        </div>
+                        <div class="pagination">
+                            <div class="page-btn"><i class="fa-solid fa-angles-left"></i></div>
+                            <div class="page-btn"><i class="fa-solid fa-angle-left"></i></div>
+                            <div class="page-btn active">1</div>
+                            <div class="page-btn">2</div>
+                            <div class="page-btn">3</div>
+                            <div class="page-btn"><i class="fa-solid fa-angle-right"></i></div>
+                            <div class="page-btn"><i class="fa-solid fa-angles-right"></i></div>
+                        </div>
+                    </div>
+
+                    <!-- Right: Details -->
+                    <div class="details-pane" id="detailsPane" style="visibility: hidden;">
+                        <div class="details-header">
+                            <h3>Organization Details</h3>
+                            <i class="fa-solid fa-ellipsis"></i>
+                        </div>
+
+                        <div class="org-title-sec">
+                            <h2 id="detName">Organization Name</h2>
+                            <div class="status-badge"><div class="stat-dot"></div> Active</div>
+                        </div>
+
+                        <div class="info-grid">
+                            <div class="info-item"><strong>Code</strong><span id="detCode">---</span></div>
+                            <div class="info-item"><strong>Email</strong><span>info@hospital.com</span></div>
+                            <div class="info-item"><strong>Phone</strong><span>+8801XXXXXXXXX</span></div>
+                            <div class="info-item"><strong>Address</strong><span id="detAddress">---</span></div>
+                            <div class="info-item"><strong>Status</strong><span class="highlight">Active</span></div>
+                        </div>
+
+                        <div class="stats-section">
+                            <h4>Statistics</h4>
+                            <div class="stats-grid">
+                                <div class="small-stat-card">
+                                    <div><h3>0</h3><p>Total Patients</p></div><i class="fa-solid fa-users"></i>
+                                </div>
+                                <div class="small-stat-card">
+                                    <div><h3>0</h3><p>Doctors</p></div><i class="fa-solid fa-user-doctor"></i>
+                                </div>
+                                <div class="small-stat-card">
+                                    <div><h3>0</h3><p>Technicians</p></div><i class="fa-solid fa-users-gear"></i>
+                                </div>
+                                <div class="small-stat-card">
+                                    <div><h3>0</h3><p>Screenings</p></div><i class="fa-solid fa-microscope"></i>
+                                </div>
+                                <div class="small-stat-card">
+                                    <div><h3>0</h3><p>AI Analyses</p></div><i class="fa-solid fa-brain"></i>
+                                </div>
+                                <div class="small-stat-card">
+                                    <div><h3>0</h3><p>Reports</p></div><i class="fa-solid fa-file-medical"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="details-actions">
+                            <button class="action-btn btn-edit"><i class="fa-regular fa-pen-to-square"></i> Edit</button>
+                            <button class="action-btn btn-disable"><i class="fa-solid fa-ban"></i> Disable</button>
+                            <button class="action-btn btn-delete"><i class="fa-regular fa-trash-can"></i> Delete</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- System Health Footer -->
+            <div class="system-health">
+                <div class="health-logo">
+                    <i class="fa-solid fa-shield-halved"></i> System Health
+                </div>
+                <div class="status-items">
+                    <div class="status-item"><div class="stat-dot"></div><div class="status-text">API Server <span>Healthy</span></div></div>
+                    <div class="status-item"><div class="stat-dot"></div><div class="status-text">AI Inference Engine <span>Healthy</span></div></div>
+                    <div class="status-item"><div class="stat-dot"></div><div class="status-text">Database <span>Healthy</span></div></div>
+                    <div class="status-item"><div class="stat-dot"></div><div class="status-text">Storage <span>74% Used</span></div></div>
+                    <div class="status-item"><div class="stat-dot"></div><div class="status-text">GPU Service <span>Running</span></div></div>
+                    <div class="status-item"><i class="fa-solid fa-cloud" style="color:#00e676;"></i><div class="status-text">Backup Status <span>Last Backup : Today 02:00 AM</span></div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", async function() {
+            const token = localStorage.getItem('access_token');
+            if (!token) {
+                window.location.href = '../shared/login.html';
+                return;
+            }
+
+            const hospitalListDiv = document.getElementById('hospitalList');
+            const notFoundMsg = document.getElementById('notFoundMsg');
+            const detailsPane = document.getElementById('detailsPane');
+
+            try {
+                const response = await fetch('http://127.0.0.1:8000/api/super-admin/hospitals', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    const hospitals = await response.json();
+                    hospitalListDiv.innerHTML = ''; 
+
+                    // টপ স্ট্যাটাস আপডেট
+                    document.getElementById('statOrgCount').textContent = hospitals.length;
+                    document.getElementById('statActiveCount').textContent = hospitals.length; // Assuming all active for now
+
+                    if(hospitals.length === 0) {
+                        hospitalListDiv.innerHTML = `<p class="not-found">Not Found</p>`;
+                        detailsPane.style.visibility = 'hidden';
+                        return;
+                    }
+
+                    // লিস্ট পপুলেট করা
+                    hospitals.forEach((hospital, index) => {
+                        const itemDiv = document.createElement('div');
+                        itemDiv.className = `org-list-item ${index === 0 ? 'active' : ''}`;
+                        itemDiv.innerHTML = `
+                            <h4>${hospital.name}</h4>
+                            <p>Code: ${hospital.code}</p>
+                        `;
+                        
+                        // ক্লিক ইভেন্ট - ডিটেইলস প্যানেল আপডেট
+                        itemDiv.addEventListener('click', () => {
+                            // আগের অ্যাক্টিভ ক্লাস রিমুভ
+                            document.querySelectorAll('.org-list-item').forEach(el => el.classList.remove('active'));
+                            itemDiv.classList.add('active');
+                            
+                            updateDetailsPane(hospital);
+                        });
+
+                        hospitalListDiv.appendChild(itemDiv);
+                    });
+
+                    // ডিফল্টভাবে প্রথম আইটেমের ডিটেইলস দেখানো
+                    if(hospitals.length > 0) {
+                        updateDetailsPane(hospitals[0]);
+                        detailsPane.style.visibility = 'visible';
+                    }
+
+                } else {
+                    notFoundMsg.textContent = "Unauthorized access or server error.";
+                }
+            } catch (error) {
+                notFoundMsg.textContent = "Cannot connect to server.";
+            }
+        });
+
+        function updateDetailsPane(hospital) {
+            document.getElementById('detName').textContent = hospital.name;
+            document.getElementById('detCode').textContent = hospital.code;
+            document.getElementById('detAddress').textContent = hospital.address;
+        }
+
+        function logout() {
+            localStorage.clear();
+            window.location.href = '../shared/login.html';
+        }
+    </script>
+</body>
+</html>

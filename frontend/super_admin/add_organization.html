@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Organization - RetinaGuard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+
+        body { 
+            background-color: #02060d; 
+            color: #ffffff; 
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Top Navbar */
+        .top-navbar {
+            background-color: #050b14;
+            border-bottom: 1px solid rgba(0, 230, 118, 0.2);
+            padding: 15px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .top-navbar .logo { display: flex; align-items: center; gap: 10px; font-size: 18px; font-weight: 700; }
+        .top-navbar .logo i { color: #00e676; font-size: 22px; }
+        .top-navbar .divider { width: 2px; height: 20px; background-color: #00e676; }
+        .top-navbar .page-title { font-size: 16px; font-weight: 500; }
+
+        /* Main Container */
+        .main-container {
+            padding: 30px 50px;
+            flex: 1;
+        }
+
+        /* Page Header */
+        .page-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        .page-header .icon-box {
+            width: 45px; height: 45px;
+            background: rgba(0, 230, 118, 0.1);
+            border: 1px solid #00e676;
+            border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            color: #00e676; font-size: 20px;
+        }
+        .page-header h2 { font-size: 22px; font-weight: 700; margin-bottom: 5px; }
+        .page-header p { font-size: 13px; color: #00e676; }
+
+        /* Grid Layout */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        /* Section Cards */
+        .section-card {
+            background-color: #060e18;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 25px;
+        }
+        .section-title {
+            display: flex; align-items: center; gap: 10px;
+            font-size: 15px; font-weight: 600;
+            margin-bottom: 25px;
+            color: #fff;
+        }
+        .section-title i { color: #00e676; }
+
+        /* Form Fields */
+        .form-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            width: 150px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            color: #fff;
+        }
+        .form-group label i { color: #00e676; width: 15px; text-align: center; }
+        .form-group input, .form-group select {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            padding: 10px 15px;
+            color: #fff;
+            font-size: 13px;
+            outline: none;
+            transition: 0.3s;
+        }
+        .form-group input:focus, .form-group select:focus {
+            border-color: #00e676;
+        }
+
+        /* File Upload Area */
+        .upload-area {
+            border: 1px dashed rgba(0, 230, 118, 0.5);
+            border-radius: 8px;
+            background: rgba(0, 230, 118, 0.02);
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 20px;
+            cursor: pointer;
+        }
+        .upload-area i { font-size: 30px; color: #00e676; margin-bottom: 10px; }
+        .upload-area p { font-size: 13px; font-weight: 600; margin-bottom: 5px; }
+        .upload-area span { font-size: 11px; color: #8b9bb4; }
+        
+        .textarea-group { display: flex; flex-direction: column; }
+        .textarea-group label { margin-bottom: 10px; font-size: 13px; color: #fff; }
+        .textarea-group textarea {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            padding: 15px;
+            color: #fff;
+            font-size: 13px;
+            height: 100px;
+            resize: none;
+            outline: none;
+        }
+        .textarea-group textarea:focus { border-color: #00e676; }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+        .btn {
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.3s;
+        }
+        .btn-draft { background: transparent; border: 1px solid rgba(255,255,255,0.2); color: #fff; }
+        .btn-cancel { background: transparent; border: 1px solid #ff4a4a; color: #ff4a4a; }
+        .btn-create { background: #00e676; border: 1px solid #00e676; color: #000; }
+        
+        .btn-draft:hover { border-color: #fff; }
+        .btn-cancel:hover { background: rgba(255, 74, 74, 0.1); }
+        .btn-create:hover { background: #00c652; }
+
+        /* Message */
+        #statusMessage {
+            text-align: center; margin-top: -20px; margin-bottom: 20px; font-size: 14px; display: none;
+        }
+        .success { color: #00e676; }
+        .error { color: #ff4a4a; }
+
+    </style>
+</head>
+<body>
+
+    <div class="top-navbar">
+        <div class="logo"><i class="fa-solid fa-eye"></i> RetinaGuard</div>
+        <div class="divider"></div>
+        <div class="page-title">Add Organization</div>
+    </div>
+
+    <div class="main-container">
+        
+        <div class="page-header">
+            <div class="icon-box"><i class="fa-solid fa-building-user"></i></div>
+            <div>
+                <h2>Add Organization</h2>
+                <p>Register a new hospital or clinic in RetinaGuard</p>
+            </div>
+        </div>
+
+        <form id="addOrganizationForm">
+            <div class="form-grid">
+                
+                <!-- Basic Information -->
+                <div class="section-card">
+                    <div class="section-title"><i class="fa-regular fa-comment-dots"></i> Basic Information</div>
+                    
+                    <div class="form-group">
+                        <label><i class="fa-solid fa-building"></i> Organization Name:</label>
+                        <input type="text" id="hospital_name" placeholder="Enter organization name" required>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fa-solid fa-barcode"></i> Organization Code:</label>
+                        <input type="text" id="hospital_code" placeholder="Enter unique organization code" required>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fa-solid fa-sitemap"></i> Organization Type:</label>
+                        <select>
+                            <option>Hospital</option>
+                            <option>Clinic</option>
+                            <option>Diagnostic Center</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fa-regular fa-circle-dot"></i> Status:</label>
+                        <select style="color: #00e676;">
+                            <option>Active</option>
+                            <option>Inactive</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fa-regular fa-calendar"></i> Established Year:</label>
+                        <input type="date">
+                    </div>
+                </div>
+
+                <!-- Organization Information -->
+                <div class="section-card">
+                    <div class="section-title"><i class="fa-regular fa-building"></i> Organization Information</div>
+                    <div style="display: flex; gap: 20px;">
+                        <label style="font-size: 13px; color: #fff; width: 80px;">Logo:</label>
+                        <!-- ক্লিক করলে ফাইল ইনপুট ওপেন হবে -->
+                        <div class="upload-area" id="dropZone" style="flex: 1;" onclick="document.getElementById('logoInput').click()">
+                            <i class="fa-solid fa-cloud-arrow-up" id="uploadIcon"></i>
+                            <p id="uploadText">Upload Logo</p>
+                            <span id="uploadSubText">PNG, JPG or SVG (Max 2MB)</span>
+        
+                            <!-- আসল ফাইল ইনপুট (যা লুকানো থাকবে) -->
+                            <input type="file" id="logoInput" style="display: none;" accept="image/png, image/jpeg, image/svg+xml">
+                        </div>
+                    </div>
+                    <div class="textarea-group">
+                        <label>Description:</label>
+                        <textarea placeholder="Enter organization description (optional)"></textarea>
+                    </div>
+                </div>
+
+                <!-- Contact & Admin Information -->
+                <div class="section-card">
+                    <div class="section-title"><i class="fa-regular fa-user"></i> Contact & Admin Information</div>
+                    
+                    <!-- Admin Name Added -->
+                    <div class="form-group">
+                        <label><i class="fa-solid fa-user-tie"></i> Admin Name:</label>
+                        <input type="text" id="admin_name" placeholder="Enter admin name" required>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fa-regular fa-envelope"></i> Email:</label>
+                        <input type="email" id="admin_email" placeholder="Enter admin email address" required>
+                    </div>
+                    <!-- Admin Password Added -->
+                    <div class="form-group">
+                        <label><i class="fa-solid fa-lock"></i> Password:</label>
+                        <input type="password" id="admin_password" placeholder="Enter admin password" required>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fa-solid fa-phone"></i> Phone:</label>
+                        <input type="text" placeholder="Enter phone number">
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fa-solid fa-globe"></i> Website:</label>
+                        <input type="text" placeholder="Enter website URL (optional)">
+                    </div>
+                </div>
+
+                <!-- Address -->
+                <div class="section-card">
+                    <div class="section-title"><i class="fa-solid fa-location-dot"></i> Address</div>
+                    
+                    <div class="form-group">
+                        <label>Country:</label>
+                        <select><option>Select country</option><option>Bangladesh</option></select>
+                    </div>
+                    <div class="form-group">
+                        <label>Division:</label>
+                        <select><option>Select division</option><option>Dhaka</option><option>Chattogram</option></select>
+                    </div>
+                    <div class="form-group">
+                        <label>District:</label>
+                        <select><option>Select district</option><option>Dhaka</option><option>Chattogram</option></select>
+                        
+                    </div>
+                    <div class="form-group">
+                        <label>Postal Code:</label>
+                        <input type="text" placeholder="Enter postal code">
+                    </div>
+                    <div class="form-group">
+                        <label>Full Address:</label>
+                        <input type="text" id="hospital_address" placeholder="Enter full address" required>
+                    </div>
+                </div>
+
+            </div>
+
+            <div id="statusMessage"></div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button type="button" class="btn btn-draft"><i class="fa-regular fa-floppy-disk"></i> Save Draft</button>
+                <button type="button" class="btn btn-cancel" onclick="window.history.back()"><i class="fa-solid fa-xmark"></i> Cancel</button>
+                <button type="submit" class="btn btn-create"><i class="fa-solid fa-plus"></i> Create Organization</button>
+            </div>
+        </form>
+
+    </div>
+
+    <script>
+        document.getElementById('addOrganizationForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const token = localStorage.getItem('access_token');
+            if (!token) {
+                alert("আপনি লগইন করা নেই!");
+                window.location.href = '../shared/login.html';
+                return;
+            }
+
+            const data = {
+                hospital_name: document.getElementById('hospital_name').value,
+                hospital_code: document.getElementById('hospital_code').value,
+                hospital_address: document.getElementById('hospital_address').value,
+                admin_name: document.getElementById('admin_name').value,
+                admin_email: document.getElementById('admin_email').value,
+                admin_password: document.getElementById('admin_password').value
+            };
+
+            const statusMsg = document.getElementById('statusMessage');
+            
+            // সাবমিট বাটনে লোডিং স্টেট দেখানো
+            const submitBtn = document.querySelector('.btn-create');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Creating...';
+            submitBtn.disabled = true;
+
+            try {
+                const response = await fetch('http://127.0.0.1:8000/api/super-admin/hospitals', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    statusMsg.textContent = "Organization successfully created!";
+                    statusMsg.className = "success";
+                    statusMsg.style.display = "block";
+                    document.getElementById('addOrganizationForm').reset();
+                    
+                    // সফল হলে ২ সেকেন্ড পর ড্যাশবোর্ডে নিয়ে যাবে
+                    setTimeout(() => {
+                        window.location.href = 'dashboard.html';
+                    }, 2000);
+                } else {
+                    statusMsg.textContent = result.detail || "Something went wrong!";
+                    statusMsg.className = "error";
+                    statusMsg.style.display = "block";
+                }
+            } catch (error) {
+                statusMsg.textContent = "Failed to connect to the server.";
+                statusMsg.className = "error";
+                statusMsg.style.display = "block";
+            } finally {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+        // লোগো আপলোডের ভিজ্যুয়াল আপডেট
+        document.getElementById('logoInput').addEventListener('change', function(e) {
+        if(e.target.files.length > 0) {
+            const fileName = e.target.files[0].name;
+        
+        // ফাইল সিলেক্ট হলে টেক্সট এবং আইকন পরিবর্তন হবে
+        document.getElementById('uploadText').textContent = fileName;
+        document.getElementById('uploadText').style.color = '#00e676';
+        document.getElementById('uploadSubText').textContent = 'File selected ready to upload';
+        document.getElementById('uploadIcon').className = 'fa-solid fa-circle-check';
+    }
+});
+    </script>
+</body>
+</html>
