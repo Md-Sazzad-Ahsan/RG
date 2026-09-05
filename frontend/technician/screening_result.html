@@ -247,7 +247,7 @@
                     const data = JSON.parse(rawJson);
                     console.log("Loaded Screening Data in Result Page:", data);
 
-                    const pred = data || {};
+                    const pred = data.prediction || {};
                     const patient = data.patient_info || {};
                     const currentDate = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
 
